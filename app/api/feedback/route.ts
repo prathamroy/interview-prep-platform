@@ -11,7 +11,7 @@ export async function POST(request: NextRequest) {
     let feedback = '';
 
     if (passedCount === totalTests) {
-      feedback = `🎉 Excellent work! All ${totalTests} test cases passed!\n\n`;
+      feedback = `Excellent work! All ${totalTests} test cases passed!\n\n`;
       feedback += `Your solution demonstrates:\n`;
       feedback += `• Correct logic and implementation\n`;
       feedback += `• Good code structure\n\n`;
@@ -20,14 +20,14 @@ export async function POST(request: NextRequest) {
       feedback += `• Space complexity: Are you using extra memory efficiently?\n`;
       feedback += `• Edge cases: What happens with empty inputs?`;
     } else if (passedCount > 0) {
-      feedback = `👍 You're on the right track! ${passedCount}/${totalTests} test cases passed.\n\n`;
+      feedback = `You're on the right track! ${passedCount}/${totalTests} test cases passed.\n\n`;
       feedback += `Your code handles some cases correctly, but there are edge cases to consider:\n`;
       feedback += `• Check boundary conditions\n`;
       feedback += `• Review your algorithm logic for the failing cases\n`;
       feedback += `• Add console.log statements to debug\n\n`;
       feedback += `Tip: Look at the input/output of failing test cases to identify the pattern.`;
     } else {
-      feedback = `💪 Keep going! Let's debug this together.\n\n`;
+      feedback = `Keep going! Let's debug this together.\n\n`;
       feedback += `Common issues to check:\n`;
       feedback += `• Are you returning the correct data type?\n`;
       feedback += `• Is your function signature correct?\n`;
@@ -35,7 +35,6 @@ export async function POST(request: NextRequest) {
       feedback += `Tip: Try running through the logic manually with the test input.`;
     }
 
-    // Try OpenAI if available, otherwise use mock feedback
     if (process.env.OPENAI_API_KEY) {
       try {
         const OpenAI = (await import('openai')).default;
@@ -70,7 +69,6 @@ Keep the feedback concise (3-5 sentences) and encouraging.`;
         feedback = completion.choices[0]?.message?.content || feedback;
       } catch (error: any) {
         console.log('OpenAI unavailable, using mock feedback:', error.message);
-        // Use the mock feedback we already created
       }
     }
 
@@ -78,7 +76,7 @@ Keep the feedback concise (3-5 sentences) and encouraging.`;
   } catch (error: any) {
     console.error('Feedback error:', error);
     return NextResponse.json({
-      feedback: `💡 Focus on the test cases that are failing. Compare your output with the expected output to identify the issue!`,
+      feedback: `Focus on the test cases that are failing. Compare your output with the expected output to identify the issue!`,
     });
   }
 }

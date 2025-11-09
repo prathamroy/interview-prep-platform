@@ -2,11 +2,11 @@
 
 A full-stack web application built in **under 6 hours** using AI-powered development tools (Cursor AI & GitHub Copilot) to demonstrate rapid modern software development.
 
-## 🚀 Project Overview
+## Project Overview
 
 InterviewPrep AI is an intelligent coding practice platform that helps developers prepare for technical interviews with AI-powered feedback. Users can solve coding problems, run their solutions against test cases, and receive instant AI-generated feedback on their code quality and approach.
 
-## ✨ Key Features
+## Key Features
 
 - **Interactive Code Editor**: Monaco Editor (VS Code) integration with syntax highlighting
 - **Multi-language Support**: JavaScript, Python, and Java
@@ -15,7 +15,7 @@ InterviewPrep AI is an intelligent coding practice platform that helps developer
 - **Problem Library**: Curated collection of coding interview problems
 - **Responsive Design**: Beautiful UI built with Tailwind CSS
 
-## 🛠️ Technology Stack
+## Technology Stack
 
 **Frontend:**
 - Next.js 15 (React Framework with App Router)
@@ -35,7 +35,7 @@ InterviewPrep AI is an intelligent coding practice platform that helps developer
 - GitHub Copilot - Code completion
 - TypeScript for type safety
 
-## 📊 AI-Assisted Development Metrics
+## AI-Assisted Development Metrics
 
 This project showcases efficient use of AI development tools:
 
@@ -46,7 +46,7 @@ This project showcases efficient use of AI development tools:
 - **API Endpoints**: 2 REST endpoints
 - **Database Models**: 2 Prisma models
 
-## 🎯 Development Approach
+## Development Approach
 
 ### Phase 1: Setup & Architecture (30 min)
 - Project scaffolding with Next.js
@@ -73,7 +73,7 @@ This project showcases efficient use of AI development tools:
 - Error handling
 - Cross-browser testing
 
-## 🚀 Getting Started
+## Getting Started
 
 ### Prerequisites
 - Node.js 18+
@@ -119,7 +119,7 @@ npm run dev
 
 Visit `http://localhost:3000`
 
-## 📁 Project Structure
+## Project Structure
 ```
 interview-prep-platform/
 ├── app/                      # Next.js app directory
@@ -145,7 +145,7 @@ interview-prep-platform/
     └── seed.ts          # Database seeding
 ```
 
-## 🎨 Key Features Implementation
+## Key Features Implementation
 
 ### Code Execution
 - Mock execution with configurable pass/fail rates
@@ -162,17 +162,7 @@ interview-prep-platform/
 - JSON storage for test cases and starter code
 - Category and difficulty filtering
 
-## 🔄 Future Enhancements
-
-- [ ] Real code execution with Docker sandboxing
-- [ ] User authentication and profiles
-- [ ] Submission history tracking
-- [ ] Performance analytics dashboard
-- [ ] Collaborative problem-solving
-- [ ] More programming languages
-- [ ] Video explanations for solutions
-
-## 📝 Lessons Learned
+## Lessons Learned
 
 ### AI-Assisted Development Insights:
 1. **Rapid Prototyping**: AI tools accelerate boilerplate and component creation
@@ -186,15 +176,15 @@ interview-prep-platform/
 - **Mock Execution First**: Validate UI/UX before complex backend
 - **Modular Components**: Easy to extend and maintain
 
-## 🤝 Contributing
+## Contributing
 
 This is a portfolio/demonstration project, but suggestions and feedback are welcome!
 
-## 📄 License
+## License
 
 MIT License - feel free to use this project for learning and inspiration.
 
-## 👤 Author
+## Author
 
 **Pratham Roy**
 - GitHub: [@prathamroy](https://github.com/prathamroy)
