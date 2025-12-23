@@ -19,13 +19,14 @@ model Problem {
   description String
   difficulty  String
   category    String
+  patterns    String
   testCases   String
   starterCode String
   solution    String?
+  hints       String?
   createdAt   DateTime @default(now())
   
   submissions Submission[]
-  @@map("problems")
 }
 
 model Submission {

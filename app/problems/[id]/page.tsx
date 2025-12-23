@@ -31,6 +31,10 @@ export default async function ProblemPage({ params }: { params: { id: string } }
     }
   };
 
+  // Parse patterns and hints from the problem
+  const patterns = problem.patterns ? JSON.parse(problem.patterns) : [];
+  const hints = problem.hints ? JSON.parse(problem.hints) : [];
+
   return (
     <div className="h-screen flex flex-col">
       {/* Problem Header */}
@@ -94,6 +98,8 @@ export default async function ProblemPage({ params }: { params: { id: string } }
             problemId={problem.id}
             starterCode={JSON.parse(problem.starterCode)}
             testCases={JSON.parse(problem.testCases)}
+            patterns={patterns}
+            hints={hints}
           />
         </div>
       </div>

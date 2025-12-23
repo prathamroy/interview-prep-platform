@@ -1,15 +1,23 @@
 'use client';
 import { useState } from 'react';
 import Editor from '@monaco-editor/react';
-import { Play, Loader2, Sparkles, ChevronDown } from 'lucide-react';
+import { Play, Loader2, Sparkles, ChevronDown, Lightbulb, Target } from 'lucide-react';
 
 interface CodeEditorProps {
   problemId: string;
   starterCode: { [key: string]: string };
   testCases: any[];
+  patterns?: string[];
+  hints?: string[];
 }
 
-export default function CodeEditor({ problemId, starterCode, testCases }: CodeEditorProps) {
+export default function CodeEditor({ 
+  problemId, 
+  starterCode, 
+  testCases,
+  patterns = [],
+  hints = []
+}: CodeEditorProps) {
   const [code, setCode] = useState(starterCode.javascript || '');
   const [language, setLanguage] = useState('javascript');
   const [output, setOutput] = useState<string>('');
@@ -17,6 +25,8 @@ export default function CodeEditor({ problemId, starterCode, testCases }: CodeEd
   const [isFeedbackLoading, setIsFeedbackLoading] = useState(false);
   const [feedback, setFeedback] = useState<string>('');
   const [testResults, setTestResults] = useState<any[]>([]);
+  const [currentHintLevel, setCurrentHintLevel] = useState(0);
+  const [showPatterns, setShowPatterns] = useState(false);
 
   const handleLanguageChange = (newLanguage: string) => {
     setLanguage(newLanguage);
@@ -72,6 +82,7 @@ export default function CodeEditor({ problemId, starterCode, testCases }: CodeEd
           language,
           problemId,
           testResults,
+          patterns, // Include patterns for context
         }),
       });
 
@@ -84,10 +95,16 @@ export default function CodeEditor({ problemId, starterCode, testCases }: CodeEd
     }
   };
 
+  const showNextHint = () => {
+    if (currentHintLevel < hints.length) {
+      setCurrentHintLevel(currentHintLevel + 1);
+    }
+  };
+
   return (
     <>
       {/* Editor Header */}
-      <div className="bg-gray-800 border-b border-gray-700 px-4 py-2 flex items-center justify-between">
+      <div className="bg-gray-800 border-b border-gray-700 px-4 py-2 flex items-center justify-between flex-wrap gap-2">
         <div className="flex items-center gap-2">
           <div className="relative">
             <select
@@ -101,6 +118,29 @@ export default function CodeEditor({ problemId, starterCode, testCases }: CodeEd
             </select>
             <ChevronDown className="absolute right-2 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400 pointer-events-none" />
           </div>
+
+          {/* Patterns Button */}
+          {patterns.length > 0 && (
+            <button
+              onClick={() => setShowPatterns(!showPatterns)}
+              className="flex items-center gap-2 px-3 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700 text-sm font-medium"
+            >
+              <Target className="h-4 w-4" />
+              Patterns
+            </button>
+          )}
+
+          {/* Hints Button */}
+          {hints.length > 0 && (
+            <button
+              onClick={showNextHint}
+              disabled={currentHintLevel >= hints.length}
+              className="flex items-center gap-2 px-3 py-2 bg-yellow-600 text-white rounded hover:bg-yellow-700 disabled:opacity-50 disabled:cursor-not-allowed text-sm font-medium"
+            >
+              <Lightbulb className="h-4 w-4" />
+              Hint ({currentHintLevel}/{hints.length})
+            </button>
+          )}
         </div>
         
         <div className="flex items-center gap-2">
@@ -130,6 +170,48 @@ export default function CodeEditor({ problemId, starterCode, testCases }: CodeEd
           </button>
         </div>
       </div>
+
+      {/* Patterns Display */}
+      {showPatterns && patterns.length > 0 && (
+        <div className="bg-indigo-900 px-4 py-3 border-b border-indigo-700">
+          <div className="flex items-start gap-2">
+            <Target className="h-5 w-5 text-indigo-300 mt-0.5 flex-shrink-0" />
+            <div>
+              <h4 className="text-indigo-100 font-semibold mb-2">Common Patterns for This Problem:</h4>
+              <div className="flex flex-wrap gap-2">
+                {patterns.map((pattern, idx) => (
+                  <span
+                    key={idx}
+                    className="px-3 py-1 bg-indigo-700 text-indigo-100 rounded-full text-sm font-medium"
+                  >
+                    {pattern}
+                  </span>
+                ))}
+              </div>
+              <p className="text-indigo-200 text-sm mt-2">
+                These patterns are commonly used to solve this type of problem efficiently.
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Hints Display */}
+      {currentHintLevel > 0 && hints.length > 0 && (
+        <div className="bg-yellow-900 px-4 py-3 border-b border-yellow-700">
+          <div className="flex items-start gap-2">
+            <Lightbulb className="h-5 w-5 text-yellow-300 mt-0.5 flex-shrink-0" />
+            <div className="flex-1">
+              <h4 className="text-yellow-100 font-semibold mb-2">Hint {currentHintLevel}:</h4>
+              {hints.slice(0, currentHintLevel).map((hint, idx) => (
+                <p key={idx} className="text-yellow-100 mb-2">
+                  {idx + 1}. {hint}
+                </p>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Monaco Editor */}
       <div className="flex-1">
