@@ -23,17 +23,33 @@ InterviewPrep AI is an intelligent coding practice platform that helps developer
 - Tailwind CSS
 - Monaco Editor (@monaco-editor/react)
 - Lucide React Icons
+- React Hooks (useState, useEffect)
 
 **Backend:**
 - Next.js API Routes
-- Prisma ORM
-- SQLite Database
-- OpenAI API Integration
+- Node.js Runtime
+- VM2 / Isolated-VM (Code Execution Sandbox)
+- OpenAI API Integration (GPT-3.5/4 for code feedback)
 
-**Development Tools:**
-- Cursor AI - AI-powered code editor
-- GitHub Copilot - Code completion
-- TypeScript for type safety
+**Database & ORM:**
+- Prisma ORM
+- PostgreSQL (Vercel Postgres)
+
+**Development & Deployment:**
+- Vercel (Hosting & CI/CD)
+- Git & GitHub
+- ESLint & Prettier
+- PostCSS
+
+**AI-Assisted Development Tools:**
+- Cursor AI
+- GitHub Copilot
+- ChatGPT (Architecture planning)
+
+**Testing & Quality:**
+- Custom test case execution engine
+- TypeScript strict mode
+- Error boundary handling
 
 ## AI-Assisted Development Metrics
 

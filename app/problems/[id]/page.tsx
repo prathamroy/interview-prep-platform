@@ -3,7 +3,7 @@ import CodeEditor from '@/components/CodeEditor';
 import { problems as problemsData } from '@/data/problems';
 
 async function getProblem(id: string) {
-  // Try to find by index
+  // Extract index from id (e.g., "problem-1" -> 0)
   const index = parseInt(id.replace('problem-', '')) - 1;
   
   if (index >= 0 && index < problemsData.length) {
@@ -45,34 +45,32 @@ export default async function ProblemPage({
   try {
     patterns = problem.patterns ? JSON.parse(problem.patterns) : [];
   } catch (e) {
-    console.error('Error parsing patterns:', e);
+    patterns = [];
   }
   
   try {
     hints = problem.hints ? JSON.parse(problem.hints) : [];
   } catch (e) {
-    console.error('Error parsing hints:', e);
+    hints = [];
   }
 
   // Safely parse test cases and starter code
-  let testCases = [];
-  let starterCode = {};
+  let testCases: any[] = [];
+  let starterCode: any = {};
   
   try {
     testCases = typeof problem.testCases === 'string' 
       ? JSON.parse(problem.testCases) 
-      : problem.testCases;
+      : problem.testCases || [];
   } catch (e) {
-    console.error('Error parsing testCases:', e);
     testCases = [];
   }
   
   try {
     starterCode = typeof problem.starterCode === 'string'
       ? JSON.parse(problem.starterCode)
-      : problem.starterCode;
+      : problem.starterCode || {};
   } catch (e) {
-    console.error('Error parsing starterCode:', e);
     starterCode = {
       javascript: '// Error loading starter code',
       python: '# Error loading starter code',

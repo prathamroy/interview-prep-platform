@@ -1,7 +1,7 @@
 'use client';
-import { useState, useRef, useEffect } from 'react';
+import { useState } from 'react';
 import Editor from '@monaco-editor/react';
-import { Play, Loader2, Sparkles, ChevronDown, Lightbulb, Target, Code2, GripVertical } from 'lucide-react';
+import { Play, Loader2, Sparkles, ChevronDown, Lightbulb, Target, Code2 } from 'lucide-react';
 
 interface CodeEditorProps {
   problemId: string;
@@ -31,10 +31,8 @@ export default function CodeEditor({
   const [showSolution, setShowSolution] = useState(false);
   const [isGeneratingSolution, setIsGeneratingSolution] = useState(false);
   
-  // Resizable panel state
-  const [editorHeight, setEditorHeight] = useState(60); // percentage
-  const containerRef = useRef<HTMLDivElement>(null);
-  const isDragging = useRef(false);
+  // Simple output panel height control
+  const [outputHeight, setOutputHeight] = useState<'small' | 'medium' | 'large'>('medium');
 
   const handleLanguageChange = (newLanguage: string) => {
     setLanguage(newLanguage);
@@ -135,45 +133,16 @@ export default function CodeEditor({
     }
   };
 
-  // Handle mouse drag for resizing
-  const handleMouseDown = () => {
-    isDragging.current = true;
-    document.body.style.cursor = 'row-resize';
-    document.body.style.userSelect = 'none';
-  };
-
-  const handleMouseMove = (e: MouseEvent) => {
-    if (!isDragging.current || !containerRef.current) return;
-
-    const container = containerRef.current;
-    const containerRect = container.getBoundingClientRect();
-    const offsetY = e.clientY - containerRect.top;
-    const newHeight = (offsetY / containerRect.height) * 100;
-
-    // Constrain between 30% and 80%
-    if (newHeight >= 30 && newHeight <= 80) {
-      setEditorHeight(newHeight);
+  const getOutputHeightClass = () => {
+    switch(outputHeight) {
+      case 'small': return 'h-48';
+      case 'medium': return 'h-64';
+      case 'large': return 'h-96';
     }
   };
 
-  const handleMouseUp = () => {
-    isDragging.current = false;
-    document.body.style.cursor = '';
-    document.body.style.userSelect = '';
-  };
-
-  useEffect(() => {
-    document.addEventListener('mousemove', handleMouseMove);
-    document.addEventListener('mouseup', handleMouseUp);
-
-    return () => {
-      document.removeEventListener('mousemove', handleMouseMove);
-      document.removeEventListener('mouseup', handleMouseUp);
-    };
-  }, []);
-
   return (
-    <div ref={containerRef} className="flex flex-col h-full">
+    <>
       {/* Editor Header */}
       <div className="bg-gray-800 border-b border-gray-700 px-4 py-2 flex items-center justify-between flex-wrap gap-2">
         <div className="flex items-center gap-2 flex-wrap">
@@ -298,8 +267,8 @@ export default function CodeEditor({
         </div>
       )}
 
-      {/* Monaco Editor - Resizable */}
-      <div style={{ height: `${editorHeight}%` }}>
+      {/* Monaco Editor */}
+      <div className="flex-1">
         <Editor
           height="100%"
           language={language}
@@ -316,20 +285,34 @@ export default function CodeEditor({
         />
       </div>
 
-      {/* Draggable Divider */}
-      <div
-        onMouseDown={handleMouseDown}
-        className="h-2 bg-gray-700 hover:bg-gray-600 cursor-row-resize flex items-center justify-center border-y border-gray-600 transition-colors"
-        title="Drag to resize"
-      >
-        <GripVertical className="h-4 w-4 text-gray-400" />
-      </div>
+      {/* Output Panel with Size Controls */}
+      <div className={`${getOutputHeightClass()} bg-gray-800 border-t border-gray-700 overflow-y-auto transition-all duration-200`}>
+        {/* Size Control Bar */}
+        <div className="bg-gray-750 border-b border-gray-700 px-4 py-2 flex items-center justify-between">
+          <h3 className="text-white text-sm font-medium">Output</h3>
+          <div className="flex items-center gap-2">
+            <span className="text-gray-400 text-xs">Panel Size:</span>
+            <button
+              onClick={() => setOutputHeight('small')}
+              className={`px-2 py-1 text-xs rounded ${outputHeight === 'small' ? 'bg-blue-600 text-white' : 'bg-gray-700 text-gray-300 hover:bg-gray-600'}`}
+            >
+              Small
+            </button>
+            <button
+              onClick={() => setOutputHeight('medium')}
+              className={`px-2 py-1 text-xs rounded ${outputHeight === 'medium' ? 'bg-blue-600 text-white' : 'bg-gray-700 text-gray-300 hover:bg-gray-600'}`}
+            >
+              Medium
+            </button>
+            <button
+              onClick={() => setOutputHeight('large')}
+              className={`px-2 py-1 text-xs rounded ${outputHeight === 'large' ? 'bg-blue-600 text-white' : 'bg-gray-700 text-gray-300 hover:bg-gray-600'}`}
+            >
+              Large
+            </button>
+          </div>
+        </div>
 
-      {/* Output Panel - Resizable */}
-      <div 
-        style={{ height: `${100 - editorHeight}%` }}
-        className="bg-gray-800 overflow-y-auto"
-      >
         <div className="p-4">
           {/* AI Solution Display */}
           {showSolution && aiSolution && (
@@ -399,6 +382,6 @@ export default function CodeEditor({
           )}
         </div>
       </div>
-    </div>
+    </>
   );
 }
