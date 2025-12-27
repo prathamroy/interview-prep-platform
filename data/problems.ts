@@ -27,7 +27,7 @@ export const problems = [
     ]),
     starterCode: JSON.stringify({
       javascript: "/**\n * @param {number[]} nums\n * @param {number} target\n * @return {number[]}\n */\nvar twoSum = function(nums, target) {\n    // Your code here\n};",
-      python: "class Solution:\n    def twoSum(self, nums: List[int], target: int) -> List[int]:\n        # Your code here\n        pass",
+      python: "from typing import List\n\nclass Solution:\n    def twoSum(self, nums: List[int], target: int) -> List[int]:\n        # Your code here\n        pass",
       java: "class Solution {\n    public int[] twoSum(int[] nums, int target) {\n        // Your code here\n    }\n}"
     })
   },
@@ -58,7 +58,7 @@ export const problems = [
     ]),
     starterCode: JSON.stringify({
       javascript: "/**\n * @param {string} s\n * @return {boolean}\n */\nvar isValid = function(s) {\n    // Your code here\n};",
-      python: "class Solution:\n    def isValid(self, s: str) -> bool:\n        # Your code here\n        pass",
+      python: "from typing import List\n\nclass Solution:\n    def isValid(self, s: str) -> bool:\n        # Your code here\n        pass",
       java: "class Solution {\n    public boolean isValid(String s) {\n        // Your code here\n    }\n}"
     })
   },
@@ -89,7 +89,7 @@ export const problems = [
     ]),
     starterCode: JSON.stringify({
       javascript: "/**\n * @param {ListNode} head\n * @return {ListNode}\n */\nvar reverseList = function(head) {\n    // Your code here\n};",
-      python: "class Solution:\n    def reverseList(self, head: Optional[ListNode]) -> Optional[ListNode]:\n        # Your code here\n        pass",
+      python: "from typing import List\n\nclass Solution:\n    def reverseList(self, head: Optional[ListNode]) -> Optional[ListNode]:\n        # Your code here\n        pass",
       java: "class Solution {\n    public ListNode reverseList(ListNode head) {\n        // Your code here\n    }\n}"
     })
   },
@@ -123,7 +123,7 @@ export const problems = [
     ]),
     starterCode: JSON.stringify({
       javascript: "/**\n * @param {number[]} nums\n * @return {boolean}\n */\nvar containsDuplicate = function(nums) {\n    // Your code here\n};",
-      python: "class Solution:\n    def containsDuplicate(self, nums: List[int]) -> bool:\n        # Your code here\n        pass",
+      python: "from typing import List\n\nclass Solution:\n    def containsDuplicate(self, nums: List[int]) -> bool:\n        # Your code here\n        pass",
       java: "class Solution {\n    public boolean containsDuplicate(int[] nums) {\n        // Your code here\n    }\n}"
     })
   },
@@ -157,7 +157,7 @@ export const problems = [
     ]),
     starterCode: JSON.stringify({
       javascript: "/**\n * @param {number[]} nums\n * @return {number}\n */\nvar maxSubArray = function(nums) {\n    // Your code here\n};",
-      python: "class Solution:\n    def maxSubArray(self, nums: List[int]) -> int:\n        # Your code here\n        pass",
+      python: "from typing import List\n\nclass Solution:\n    def maxSubArray(self, nums: List[int]) -> int:\n        # Your code here\n        pass",
       java: "class Solution {\n    public int maxSubArray(int[] nums) {\n        // Your code here\n    }\n}"
     })
   },
@@ -191,7 +191,7 @@ export const problems = [
     ]),
     starterCode: JSON.stringify({
       javascript: "/**\n * @param {string} s\n * @return {number}\n */\nvar lengthOfLongestSubstring = function(s) {\n    // Your code here\n};",
-      python: "class Solution:\n    def lengthOfLongestSubstring(self, s: str) -> int:\n        # Your code here\n        pass",
+      python: "from typing import List\n\nclass Solution:\n    def lengthOfLongestSubstring(self, s: str) -> int:\n        # Your code here\n        pass",
       java: "class Solution {\n    public int lengthOfLongestSubstring(String s) {\n        // Your code here\n    }\n}"
     })
   },
@@ -225,7 +225,7 @@ export const problems = [
     ]),
     starterCode: JSON.stringify({
       javascript: "/**\n * @param {ListNode} list1\n * @param {ListNode} list2\n * @return {ListNode}\n */\nvar mergeTwoLists = function(list1, list2) {\n    // Your code here\n};",
-      python: "class Solution:\n    def mergeTwoLists(self, list1: Optional[ListNode], list2: Optional[ListNode]) -> Optional[ListNode]:\n        # Your code here\n        pass",
+      python: "from typing import List\n\nclass Solution:\n    def mergeTwoLists(self, list1: Optional[ListNode], list2: Optional[ListNode]) -> Optional[ListNode]:\n        # Your code here\n        pass",
       java: "class Solution {\n    public ListNode mergeTwoLists(ListNode list1, ListNode list2) {\n        // Your code here\n    }\n}"
     })
   },
@@ -259,7 +259,7 @@ export const problems = [
     ]),
     starterCode: JSON.stringify({
       javascript: "/**\n * @param {TreeNode} root\n * @return {number}\n */\nvar maxDepth = function(root) {\n    // Your code here\n};",
-      python: "class Solution:\n    def maxDepth(self, root: Optional[TreeNode]) -> int:\n        # Your code here\n        pass",
+      python: "from typing import List\n\nclass Solution:\n    def maxDepth(self, root: Optional[TreeNode]) -> int:\n        # Your code here\n        pass",
       java: "class Solution {\n    public int maxDepth(TreeNode root) {\n        // Your code here\n    }\n}"
     })
   }

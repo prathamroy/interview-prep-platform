@@ -152,8 +152,12 @@ try {
   }
 
   if (language === 'python') {
+    // Check if code already has typing import
+    const hasTypingImport = code.includes('from typing import');
+    const typingImport = hasTypingImport ? '' : 'from typing import List, Optional\n\n';
+    
     return `
-${code}
+${typingImport}${code}
 
 # Test execution
 import json
@@ -191,7 +195,6 @@ except Exception as e:
   }
 
   if (language === 'java') {
-    // Java is more complex - for now, return a simple implementation
     return `
 import java.util.*;
 
