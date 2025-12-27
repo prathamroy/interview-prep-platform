@@ -1,7 +1,7 @@
 'use client';
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import Editor from '@monaco-editor/react';
-import { Play, Loader2, Sparkles, ChevronDown, Lightbulb, Target } from 'lucide-react';
+import { Play, Loader2, Sparkles, ChevronDown, Lightbulb, Target, Code2, GripVertical } from 'lucide-react';
 
 interface CodeEditorProps {
   problemId: string;
@@ -27,6 +27,14 @@ export default function CodeEditor({
   const [testResults, setTestResults] = useState<any[]>([]);
   const [currentHintLevel, setCurrentHintLevel] = useState(0);
   const [showPatterns, setShowPatterns] = useState(false);
+  const [aiSolution, setAiSolution] = useState<string>('');
+  const [showSolution, setShowSolution] = useState(false);
+  const [isGeneratingSolution, setIsGeneratingSolution] = useState(false);
+  
+  // Resizable panel state
+  const [editorHeight, setEditorHeight] = useState(60); // percentage
+  const containerRef = useRef<HTMLDivElement>(null);
+  const isDragging = useRef(false);
 
   const handleLanguageChange = (newLanguage: string) => {
     setLanguage(newLanguage);
@@ -34,6 +42,7 @@ export default function CodeEditor({
     setOutput('');
     setFeedback('');
     setTestResults([]);
+    setShowSolution(false);
   };
 
   const handleRunCode = async () => {
@@ -82,7 +91,7 @@ export default function CodeEditor({
           language,
           problemId,
           testResults,
-          patterns, // Include patterns for context
+          patterns,
         }),
       });
 
@@ -95,17 +104,79 @@ export default function CodeEditor({
     }
   };
 
+  const handleShowSolution = async () => {
+    setIsGeneratingSolution(true);
+    
+    try {
+      const response = await fetch('/api/solve', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          problemId,
+          language,
+          patterns,
+        }),
+      });
+
+      const data = await response.json();
+      setAiSolution(data.solution || '// Could not generate solution');
+      setShowSolution(true);
+    } catch (error) {
+      setAiSolution('// Error generating solution');
+      setShowSolution(true);
+    } finally {
+      setIsGeneratingSolution(false);
+    }
+  };
+
   const showNextHint = () => {
     if (currentHintLevel < hints.length) {
       setCurrentHintLevel(currentHintLevel + 1);
     }
   };
 
+  // Handle mouse drag for resizing
+  const handleMouseDown = () => {
+    isDragging.current = true;
+    document.body.style.cursor = 'row-resize';
+    document.body.style.userSelect = 'none';
+  };
+
+  const handleMouseMove = (e: MouseEvent) => {
+    if (!isDragging.current || !containerRef.current) return;
+
+    const container = containerRef.current;
+    const containerRect = container.getBoundingClientRect();
+    const offsetY = e.clientY - containerRect.top;
+    const newHeight = (offsetY / containerRect.height) * 100;
+
+    // Constrain between 30% and 80%
+    if (newHeight >= 30 && newHeight <= 80) {
+      setEditorHeight(newHeight);
+    }
+  };
+
+  const handleMouseUp = () => {
+    isDragging.current = false;
+    document.body.style.cursor = '';
+    document.body.style.userSelect = '';
+  };
+
+  useEffect(() => {
+    document.addEventListener('mousemove', handleMouseMove);
+    document.addEventListener('mouseup', handleMouseUp);
+
+    return () => {
+      document.removeEventListener('mousemove', handleMouseMove);
+      document.removeEventListener('mouseup', handleMouseUp);
+    };
+  }, []);
+
   return (
-    <>
+    <div ref={containerRef} className="flex flex-col h-full">
       {/* Editor Header */}
       <div className="bg-gray-800 border-b border-gray-700 px-4 py-2 flex items-center justify-between flex-wrap gap-2">
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 flex-wrap">
           <div className="relative">
             <select
               value={language}
@@ -141,6 +212,20 @@ export default function CodeEditor({
               Hint ({currentHintLevel}/{hints.length})
             </button>
           )}
+
+          {/* Show Solution Button */}
+          <button
+            onClick={handleShowSolution}
+            disabled={isGeneratingSolution}
+            className="flex items-center gap-2 px-3 py-2 bg-red-600 text-white rounded hover:bg-red-700 disabled:opacity-50 disabled:cursor-not-allowed text-sm font-medium"
+          >
+            {isGeneratingSolution ? (
+              <Loader2 className="h-4 w-4 animate-spin" />
+            ) : (
+              <Code2 className="h-4 w-4" />
+            )}
+            Show Solution
+          </button>
         </div>
         
         <div className="flex items-center gap-2">
@@ -202,7 +287,7 @@ export default function CodeEditor({
           <div className="flex items-start gap-2">
             <Lightbulb className="h-5 w-5 text-yellow-300 mt-0.5 flex-shrink-0" />
             <div className="flex-1">
-              <h4 className="text-yellow-100 font-semibold mb-2">Hint {currentHintLevel}:</h4>
+              <h4 className="text-yellow-100 font-semibold mb-2">Hints:</h4>
               {hints.slice(0, currentHintLevel).map((hint, idx) => (
                 <p key={idx} className="text-yellow-100 mb-2">
                   {idx + 1}. {hint}
@@ -213,8 +298,8 @@ export default function CodeEditor({
         </div>
       )}
 
-      {/* Monaco Editor */}
-      <div className="flex-1">
+      {/* Monaco Editor - Resizable */}
+      <div style={{ height: `${editorHeight}%` }}>
         <Editor
           height="100%"
           language={language}
@@ -231,9 +316,38 @@ export default function CodeEditor({
         />
       </div>
 
-      {/* Output Panel */}
-      <div className="h-64 bg-gray-800 border-t border-gray-700 overflow-y-auto">
+      {/* Draggable Divider */}
+      <div
+        onMouseDown={handleMouseDown}
+        className="h-2 bg-gray-700 hover:bg-gray-600 cursor-row-resize flex items-center justify-center border-y border-gray-600 transition-colors"
+        title="Drag to resize"
+      >
+        <GripVertical className="h-4 w-4 text-gray-400" />
+      </div>
+
+      {/* Output Panel - Resizable */}
+      <div 
+        style={{ height: `${100 - editorHeight}%` }}
+        className="bg-gray-800 overflow-y-auto"
+      >
         <div className="p-4">
+          {/* AI Solution Display */}
+          {showSolution && aiSolution && (
+            <div className="mb-4">
+              <h3 className="text-red-400 font-semibold mb-2 flex items-center gap-2">
+                <Code2 className="h-4 w-4" />
+                AI-Generated Solution:
+              </h3>
+              <div className="bg-gray-900 p-3 rounded border border-red-700">
+                <pre className="text-gray-300 whitespace-pre-wrap text-sm overflow-x-auto">{aiSolution}</pre>
+              </div>
+              <p className="text-yellow-400 text-sm mt-2 flex items-center gap-2">
+                <span>⚠️</span>
+                <span>Try to solve it yourself first! Use this as a last resort or for learning.</span>
+              </p>
+            </div>
+          )}
+
           {/* Test Results */}
           {testResults.length > 0 && (
             <div className="mb-4">
@@ -285,6 +399,6 @@ export default function CodeEditor({
           )}
         </div>
       </div>
-    </>
+    </div>
   );
 }
