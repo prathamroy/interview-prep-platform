@@ -1,17 +1,18 @@
-import { prisma } from '@/lib/prisma';
 import Link from 'next/link';
 import { Clock, Target } from 'lucide-react';
+import { problems as problemsData } from '@/data/problems';
 
-async function getProblems() {
-  const problems = await prisma.problem.findMany({
-    orderBy: { createdAt: 'desc' },
-  });
-  return problems;
-}
+// Create problems with sequential IDs for routing
+const problems = problemsData.map((p, idx) => ({
+  id: `problem-${idx + 1}`,
+  title: p.title,
+  description: p.description,
+  difficulty: p.difficulty,
+  category: p.category,
+  createdAt: new Date(),
+}));
 
-export default async function ProblemsPage() {
-  const problems = await getProblems();
-
+export default function ProblemsPage() {
   const getDifficultyColor = (difficulty: string) => {
     switch (difficulty) {
       case 'Easy':
