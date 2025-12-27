@@ -1,20 +1,27 @@
-import { prisma } from '@/lib/prisma';
 import { notFound } from 'next/navigation';
 import CodeEditor from '@/components/CodeEditor';
+import { problems as problemsData } from '@/data/problems';
 
 async function getProblem(id: string) {
-  const problem = await prisma.problem.findUnique({
-    where: { id },
-  });
+  // Try to find by index
+  const index = parseInt(id.replace('problem-', '')) - 1;
   
-  if (!problem) {
-    notFound();
+  if (index >= 0 && index < problemsData.length) {
+    const problem = problemsData[index];
+    return {
+      id,
+      ...problem,
+    };
   }
   
-  return problem;
+  notFound();
 }
 
-export default async function ProblemPage({ params }: { params: { id: string } }) {
+export default async function ProblemPage({ 
+  params 
+}: { 
+  params: Promise<{ id: string }> 
+}) {
   const { id } = await params;
   const problem = await getProblem(id);
   
@@ -31,9 +38,47 @@ export default async function ProblemPage({ params }: { params: { id: string } }
     }
   };
 
-  // Parse patterns and hints from the problem
-  const patterns = problem.patterns ? JSON.parse(problem.patterns) : [];
-  const hints = problem.hints ? JSON.parse(problem.hints) : [];
+  // Safely parse patterns and hints
+  let patterns: string[] = [];
+  let hints: string[] = [];
+  
+  try {
+    patterns = problem.patterns ? JSON.parse(problem.patterns) : [];
+  } catch (e) {
+    console.error('Error parsing patterns:', e);
+  }
+  
+  try {
+    hints = problem.hints ? JSON.parse(problem.hints) : [];
+  } catch (e) {
+    console.error('Error parsing hints:', e);
+  }
+
+  // Safely parse test cases and starter code
+  let testCases = [];
+  let starterCode = {};
+  
+  try {
+    testCases = typeof problem.testCases === 'string' 
+      ? JSON.parse(problem.testCases) 
+      : problem.testCases;
+  } catch (e) {
+    console.error('Error parsing testCases:', e);
+    testCases = [];
+  }
+  
+  try {
+    starterCode = typeof problem.starterCode === 'string'
+      ? JSON.parse(problem.starterCode)
+      : problem.starterCode;
+  } catch (e) {
+    console.error('Error parsing starterCode:', e);
+    starterCode = {
+      javascript: '// Error loading starter code',
+      python: '# Error loading starter code',
+      java: '// Error loading starter code'
+    };
+  }
 
   return (
     <div className="h-screen flex flex-col">
@@ -66,7 +111,7 @@ export default async function ProblemPage({ params }: { params: { id: string } }
 
             <h2 className="text-lg font-semibold text-gray-900 mb-4">Test Cases</h2>
             <div className="space-y-4">
-              {JSON.parse(problem.testCases).map((testCase: any, index: number) => (
+              {testCases.map((testCase: any, index: number) => (
                 <div key={index} className="bg-gray-50 rounded-lg p-4 border border-gray-200">
                   <div className="mb-2">
                     <span className="text-sm font-medium text-gray-700">Input:</span>
@@ -96,8 +141,8 @@ export default async function ProblemPage({ params }: { params: { id: string } }
         <div className="w-1/2 flex flex-col bg-gray-900">
           <CodeEditor 
             problemId={problem.id}
-            starterCode={JSON.parse(problem.starterCode)}
-            testCases={JSON.parse(problem.testCases)}
+            starterCode={starterCode}
+            testCases={testCases}
             patterns={patterns}
             hints={hints}
           />

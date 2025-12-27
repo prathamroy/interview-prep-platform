@@ -5,6 +5,8 @@ CREATE TABLE "problems" (
     "description" TEXT NOT NULL,
     "difficulty" TEXT NOT NULL,
     "category" TEXT NOT NULL,
+    "patterns" TEXT,
+    "hints" TEXT,
     "testCases" TEXT NOT NULL,
     "starterCode" TEXT NOT NULL,
     "solution" TEXT,
